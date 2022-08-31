@@ -1,93 +1,81 @@
+/*
+ * UC 12 : Refactor the code to throw custom exceptions in case of invalid user Details .
+ */
 package com.bridgelabz.userregistrationmain;
 
-import java.util.Scanner;
 import java.util.regex.Pattern;
+
+import com.bridgelabz.userregistrationmain.InvalidUserInputException.ExceptionType;
 
 public class UserRegistrationMain {
 
-	private final String NAME_VALIDATOR = "^[A-Z]{1}[a-z]{2,}$";
-	private final String LAST_NAME_VALIDATOR = "^[A-Z]{1}[a-z]{2,}$";
-	private final String EMAIL_VALIDATOR = "^[a-zA-Z][a-zA-Z0-9_.]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+$";
-	private final String MOBILE_NUM_VALIDATOR = "^[0-9]{1,3} [0-9]{10}$";
-	private final String PASSWORD_RULE1_VALIDATOR = "[a-z]{8,}";
-	private final String PASSWORD_RULE2_VALIDATOR = "[A-Z]{1,}[a-z]{8,}";
-	private final String PASSWORD_RULE3_VALIDATOR = "[a-z A-z 0-9]{8,}";
-	private final String PASSWORD_RULE4_VALIDATOR = "(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#$%^&-+=()]).{8,}";
-	static Scanner sc = new Scanner(System.in);
+	public static final String NAME_VALIDATOR = "^[A-Z]{1}[a-zA-z]{2,}$";
+	public static final String NUMBER_VALIDATOR = "^[0-9]{2}[ ]{1}[0-9]{10}$";
+	public static final String EMAIL_VALIDATOR = "^[a-zA-Z0-9]+[._a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]*[a-zA-Z]*@[a-zA-Z0-9]{1,8}.[a-zA-Z.]{2,6}";
+	public static final String PASSWORD_VALIDATION = "(?=.*[A-Z])(?=.*[@#$%^&*-_+=]){1}(?=.*[0-9])(?=.*[a-z]).{8,}";
 
-	public static boolean firstNameValidator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the first name: ");
-		String fName = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.NAME_VALIDATOR, fName);
-	}
-
-	public static boolean lastNameValidator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Last name: ");
-		String lName = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.LAST_NAME_VALIDATOR, lName);
-	}
-
-	public static boolean emailValidator(String email2Test) {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Email address: ");
-		String email = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.EMAIL_VALIDATOR, email);
-	}
-
-	public static boolean mobNumValidator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Mobile number: ");
-		String mobNum = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.MOBILE_NUM_VALIDATOR, mobNum);
-	}
-
-	public static boolean password1Validator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Password: ");
-		String password1 = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.PASSWORD_RULE1_VALIDATOR, password1);
-	}
-
-	public static boolean password2Validator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Password 2: ");
-		String password2 = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.PASSWORD_RULE2_VALIDATOR, password2);
-	}
-
-	public static boolean password3Validator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Password 3: ");
-		String password3 = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.PASSWORD_RULE3_VALIDATOR, password3);
-	}
-
-	public static boolean password4Validator() {
-		UserRegistrationMain uservalidate = new UserRegistrationMain();
-		System.out.println("Enter the Password 4: ");
-		String password4 = UserRegistrationMain.sc.nextLine();
-		return Pattern.matches(uservalidate.PASSWORD_RULE4_VALIDATOR, password4);
-	}
-
-	String[] validEmail = { "abc@yahoo.com", "abc-100@yahoo.com", "abc.100@yahoo.com", "abc111@abc.com",
-			"abc-100@abc.net", "abc.100@abc.com.au", "abc@1.com", "abc@gmail.com.com", "abc+100@gmail.com" };
-	String[] invalidEmail = { "abc", "abc@.com.my", "abc123@gmail.a", "abc123@.com", "abc123@.com.com", ".abc@abc.com",
-			"abc()*@gmail.com", "abc@%*.com", "abc..2002@gmail.com", "abc.@gmail.com", "abc@abc@gmail.com",
-			"abc@gmail.com.1a", "abc@gmail.com.aa.au" };
-	{
-		for (String value : validEmail) {
-			System.out.println(value);
-			System.out.println(Pattern.matches(
-					"^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
-					value));
+	public boolean firstNameValidator(String firstName) throws InvalidUserInputException {
+		try {
+			if (firstName.length() == 0) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_EMPTY, "First Name should not be Empty.");
+			} else if (Pattern.matches(NAME_VALIDATOR, firstName) == false) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_WRONG, "Entered First Name is Wrong.");
+			}
+		} catch (NullPointerException e) {
+			throw new InvalidUserInputException(ExceptionType.ENTERED_NULL, "First Name cannot be NULL.");
 		}
-		for (String s : invalidEmail) {
-			System.out.println(s);
-			System.out.println(Pattern.matches(
-					"^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
-					s));
+		return Pattern.matches(NAME_VALIDATOR, firstName);
+	}
+
+	public boolean lastNameValidator(String lastName) throws InvalidUserInputException {
+		try {
+			if (lastName.length() == 0) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_EMPTY, "Last Name should not be Empty.");
+			} else if (Pattern.matches(NAME_VALIDATOR, lastName) == false) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_WRONG, "Entered Last Name is Wrong.");
+			}
+		} catch (NullPointerException e) {
+			throw new InvalidUserInputException(ExceptionType.ENTERED_NULL, "Last Name cannot be NULL.");
 		}
+		return Pattern.matches(NAME_VALIDATOR, lastName);
+	}
+
+	public boolean mobileNumberValidator(String mobNumber) throws InvalidUserInputException {
+		try {
+			if (mobNumber.length() == 0) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_EMPTY, "Mobile Number should not be Empty.");
+			} else if (Pattern.matches(NUMBER_VALIDATOR, mobNumber) == false) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_WRONG, "Entered Mobile Number is Wrong.");
+			}
+		} catch (NullPointerException e) {
+			throw new InvalidUserInputException(ExceptionType.ENTERED_NULL, "Mobile Number cannot be NULL.");
+		}
+		return Pattern.matches(NUMBER_VALIDATOR, mobNumber);
+	}
+
+	public boolean emailValidator(String email) throws InvalidUserInputException {
+		try {
+			if (email.length() == 0) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_EMPTY, "Email should not be Empty.");
+			} else if (Pattern.matches(EMAIL_VALIDATOR, email) == false) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_WRONG, "Entered Email is Wrong.");
+			}
+		} catch (NullPointerException e) {
+			throw new InvalidUserInputException(ExceptionType.ENTERED_NULL, "Email cannot be NULL.");
+		}
+		return Pattern.matches(EMAIL_VALIDATOR, email);
+	}
+
+	public boolean passwordValidation(String password) throws InvalidUserInputException {
+		try {
+			if (password.length() == 0) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_EMPTY, "PASSWORD should not be Empty.");
+			} else if (Pattern.matches(PASSWORD_VALIDATION, password) == false) {
+				throw new InvalidUserInputException(ExceptionType.ENTERED_WRONG, "Entered PASSWORD is Wrong.");
+			}
+		} catch (NullPointerException e) {
+			throw new InvalidUserInputException(ExceptionType.ENTERED_NULL, "PASSWORD cannot be NULL.");
+		}
+		return Pattern.matches(PASSWORD_VALIDATION, password);
 	}
 }
