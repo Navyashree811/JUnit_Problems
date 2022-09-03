@@ -1,14 +1,14 @@
 package com.bridgelabz.userregistrationmain;
 
 public class InvalidUserInputException extends Exception {
-	public enum ExceptionType {
-		ENTERED_NULL, ENTERED_EMPTY, ENTERED_WRONG;
+	enum ExceptionType {
+		INVALID_FIRST_NAME, INVALID_LAST_NAME, INVALID_PASSWORD, INVALID_PHONE_NUMBER, INVALID_EMAIL;
 	}
 
-	public ExceptionType type;
+	ExceptionType type;
 
-	public InvalidUserInputException(ExceptionType type, String message) {
-		super(message);
+	public InvalidUserInputException(ExceptionType type, String msg) {
+		super(msg);
 		this.type = type;
 	}
 
